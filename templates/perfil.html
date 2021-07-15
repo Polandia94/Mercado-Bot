@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <!-- Content here -->
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="card bg-light mb-3" style="max-width: 18rem;">  <div class="card-body">
+        <h5 class="card-title">Suscripción</h5>
+        <p class="card-text">Tipo de plan: {% if user.tipo==1 %}
+                                            Gratuito
+                                            {% endif %}</p>
+        <p class="card-text">Inicio: {{user.alta}}</p>
+        <p class="card-text">Término:{{user.baja}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card bg-light mb-3" style="max-width: 18rem;">  <div class="card-body">
+        <h5 class="card-title">Ventas</h5>
+        <p class="card-text">Hoy: {{ventashoy}} </p>
+        <p class="card-text">Semanal: {{ventassemanal}} </p>
+        <p class="card-text">Mensual: {{ventasmensual}} </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card bg-light mb-3" style="max-width: 18rem;">  <div class="card-body">
+        <h5 class="card-title">Estadísticas</h5>
+        <p class="card-text">Mensajes Enviados: {{user.mensajes}}</p>
+        <a href="{{url_for('estadisticasmensajes')}}" class="btn btn-primary">Estadísticas de Mensajes</a>
+        <p class="card-text">Preguntas contestadas: {{user.respuestas}} </p>
+        <a href="{{url_for('autorrespuestametri')}}" class="btn btn-primary">Estadísticas de Preguntas</a>
+        </div>
+      </div>
+    </div>
+  </div>
+      Publicaciones
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Imágenes</th>
+      <th scope="col">Publicaciones</th>
+      <th scope="col">Precio</th>
+      <th scope="col">Ventas</th>
+      <th scope="col">Stock</th>
+      <th scope="col">Link</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for producto in productos %}
+        <tr>
+            <th scope="row"><img src={{ pictures[loop.index-1] }} alt="Image" width="50" height="50"></th>
+            <td>{{ producto }}</td>
+            <td>{{ precios[loop.index-1] }}</td>
+            <td>{{ vendidos[loop.index-1] }}</td>
+            <td>{{ stock[loop.index-1] }}</td>
+            <td><a href={{ permalink[loop.index-1] }} target="_blank">Link</a></td>
+        </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="post">
+<div class="container">
+<div class="row">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">  <div class="card-body">
+        <h5 class="card-title">Palabras Máximas </h5>
+        <p class="card-text"> Activo <input type="checkbox" name="palabrasmaximassi"  {% if encrespuestas.palabrasmaximassi %} checked {% endif %}/> </p>
+        <p class="card-text">Cantidad de Palabras<input type="number" id="palabrasmaximas" min="0" max="100" value = {{encrespuestas.palabrasmaximas}} name="palabrasmaximas" /></p>
+        </div>
+    </div>
+
+    <div class="card bg-light mb-3" style="max-width: 18rem;">  <div class="card-body">
+        <h5 class="card-title">Palabras prohibidas separadas por coma </h5>
+        <p class="card-text"> Activo <input type="checkbox" name="palabrasprohibidassi"  {% if encrespuestas.palabrasprohibidassi %} checked {% endif %}/> </p>
+        <p class="card-text"><input type="text" id="palabrasprohibidas" name ="palabrasprohibidas" value = "{{encrespuestas.palabrasprohibidas}}" /></p>
+        <p class="card-text"> Borrar pregunta<input type="checkbox" name="borrarpregunta"  {% if encrespuestas.borrarpregunta %} checked {% endif %}/></p>
+        
+        </div>
+    </div>
+
+
+    <div class="card bg-light mb-3" style="max-width: 18rem;">  <div class="card-body">
+        <h5 class="card-title">bloqueotiemposi</h5>
+        <p class="card-text"> Activo <input type="checkbox" name="bloqueotiemposi" {% if encrespuestas.bloqueotiemposi %} checked {% endif %}/></p>
+        <p class="card-text"> Lunes <input type="checkbox" name="select" value="1" {% if "1" in split %} checked {% endif %}/>  </p>
+        <p class="card-text"> Martes <input type="checkbox" name="select" value="2" {% if '2' in split %} checked {% endif %}/> </p>
+        <p class="card-text"> Miercoles <input type="checkbox" name="select" value="3" {% if "3" in split %} checked {% endif %}/> </p>
+        <p class="card-text"> Jueves <input type="checkbox" name="select" value="4" {% if "4" in split %} checked {% endif %}/> </p>
+        <p class="card-text"> Viernes <input type="checkbox" name="select" value="5" {% if "5" in split %} checked {% endif %}/>  </p>
+        <p class="card-text"> Sábado <input type="checkbox" name="select" value="6" {% if "6" in split %} checked {% endif %}/>  </p>
+        <p class="card-text"> Domingo <input type="checkbox" name="select" value="7" {% if "7" in split %} checked {% endif %}/> </p>
+        <p class="card-text"> Hora de inicio de bloqueo <input type="number" id="horainiciobloqueo" min="0" max="24" value = {{encrespuestas.horainiciobloqueo}} name="horainiciobloqueo" /></p>
+        <p class="card-text"> Minuto de inicio de bloqueo <input type="number" id="minutoiniciobloqueo" min="0" max="60" value = {{encrespuestas.minutoiniciobloqueo}} name="minutoiniciobloqueo" /> </p>
+        <p class="card-text"> Hora de fin de bloqueo <input type="number" id="horafinbloqueo" min="0" max="24" value = {{encrespuestas.horafinbloqueo}} name="horafinbloqueo" /></p>
+        <p class="card-text"> Minuto de fin de bloqueo <input type="number" id="minutofinbloqueo" min="0" max="60" value = {{encrespuestas.minutofinbloqueo}} name="minutofinbloqueo" /></p>
+        <p class="card-text">  </p>
+        </div>
+    </div>
+
+    <div class="card bg-light mb-3" style="max-width: 18rem;">  <div class="card-body">
+        <h5 class="card-title">Unir respuestas </h5>
+        <p class="card-text"> Activo <input type="checkbox" name="unirrespuestas"  {% if encrespuestas.unirrespuestas %} checked {% endif %}/> </p>
+        <p class="card-text">Unir respuestas global<input type="checkbox" name="unirrespuestaglobal"  {% if encrespuestas.unirrespuestaglobal %} checked {% endif %}/></p>
+        <p class="card-text">Cantidad de respuestas unidas<input type="number" id="respuestasunidas" min="0" max="10" value = {{encrespuestas.respuestasunidas}} name="respuestasunidas" /></p>
+        </div>
+    </div>
+<input type="submit" name="submit_button" value="Guardar Configuracion">
+</div>
+</div>
+</form>
+{% endblock %}

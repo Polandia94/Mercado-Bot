@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="post">
+{% for pregunta in listapalabras %}
+    <input type="checkbox" name="{{loop.index-1}}"  {% if listaactivadas[loop.index-1] %} checked {% endif %}/>
+    <input type="text" id="palabrasclave" name ="palabrasclave" value = "{{listapalabras[loop.index-1]}}" />
+    <input type="text" id="respuesta" name ="respuesta" value = "{{listarespuestas[loop.index-1]}}" />
+{% endfor %}
+<input type="checkbox" name="activonuevo" />
+<input type="text" id="palabrasclavenuevo" name ="palabrasclavenuevo" />
+<input type="text" id="respuestanuevo" name ="respuestanuevo" />
+<input type="submit" name="submit_button" value="Guardar Respuestas">
+</form>
+
+
+{% endblock %}

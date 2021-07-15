@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="post">
+<input type="checkbox" name="activo"  {% if activo %} checked {% endif %}/>
+<input type="text" id="respuesta" name ="respuesta" value = "{{texto}}" />
+<input type="submit" name="submit_button" value="Guardar Respuestas">
+
+</form>
+
+{% endblock %}

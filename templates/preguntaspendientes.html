@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="post">
+{% for pregunta in lista %}
+    <input type="checkbox" name="select" value={{listacodigo[loop.index-1]}} checked>
+    {{ pregunta }}
+    <input type="text" id={{listacodigo[loop.index-1]}} name={{listacodigo[loop.index-1]}} placeholder="Respuesta ..."/>
+{% endfor %}
+
+<input type="submit" name="submit_button" value="Enviar respuestas">
+<input type="submit" name="submit_button" value="No ver estas preguntas">
+<input type="submit" name="submit_button" value="Eliminar preguntas">
+</form>
+{% endblock %}

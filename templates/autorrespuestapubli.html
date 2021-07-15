@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+
+
+<form method="post">
+{% for pregunta in listapalabras %}
+  <div class="form-row">
+    <div class="col">
+    <input type="checkbox" name="{{loop.index-1}}"  {% if listaactivadas[loop.index-1] %} checked {% endif %}/>
+    </div>
+    <div class="col">
+    <input type="text" class="form-control" id="palabrasclave" name ="palabrasclave" value = "{{listapalabras[loop.index-1]}}" />
+    {% set outer_loop = loop %}
+    </div>
+    <div class="col">
+    <input type="textarea" class="form-control" id="respuesta" name ="respuesta" value = "{{listarespuestas[loop.index-1]}}" />
+    <select id="publi" name ="publi"  
+    {% for publicacion in publicaciones %}
+        <option {% if listacodigos[outer_loop.index-1] == codigo[loop.index-2]%} selected="selected" {% endif %} value="{{codigo[loop.index-2]}}">{{publicacion}} {{codigo[loop.index-2]}}</option>
+    {% endfor %}
+    /> 
+        </div>
+    </div>
+{% endfor %}
+
+<div class="form-row">
+<div class="col">
+<input type="checkbox" name="activonuevo" />
+</div>
+<div class="col">
+<input type="text" class="form-control" id="palabrasclavenuevo" name ="palabrasclavenuevo" />
+</div>
+<div class="col">
+<input type="text" class="form-control" id="respuestanuevo" name ="respuestanuevo" />
+<select  id="publinuevo" name ="publinuevo" 
+{% for publicacion in publicaciones %}
+    <option  value="{{codigo[loop.index-2]}}">{{publicacion}} {{codigo[loop.index-2]}}</option>
+{% endfor %}
+/>  
+</div>
+</div>
+<input type="submit" name="submit_button" value="Guardar Respuestas"/>
+</form>
+{% endblock %}

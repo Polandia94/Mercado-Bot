@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <!-- Content here -->
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="card bg-light mb-3" style="max-width: 18rem;">  <div class="card-body">
+        <h5 class="card-title">Suscripción</h5>
+        <p class="card-text">Tipo de plan: {% if 1==1 %}
+                                            Gratuito
+                                            {% endif %}</p>        <p class="card-text">Inicio: </p>
+        <p class="card-text">Término: </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card bg-light mb-3" style="max-width: 18rem;">  <div class="card-body">
+        <h5 class="card-title">Ventas</h5>
+        <p class="card-text">Hoy: </p>
+        <p class="card-text">Semanal: </p>
+        <p class="card-text">Mensual: </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card bg-light mb-3" style="max-width: 18rem;">  <div class="card-body">
+        <h5 class="card-title">Estadísticas</h5>
+        <p class="card-text">Mensajes Enviados: </p>
+        <a href="#" class="btn btn-primary">Estadísticas de Mensajes</a>
+        <p class="card-text">Preguntas contestadas: </p>
+        <a href="#" class="btn btn-primary">Estadísticas de Preguntas</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
