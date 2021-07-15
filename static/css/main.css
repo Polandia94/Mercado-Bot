@@ -1,19 +1,27 @@
+
+
 .navbar {
     margin-bottom: 0;
     background-color: #fff11e;
     z-index: 9999;
     border: 0;
-    font-size: 12px !important;
+    font-size: 16px !important;
     line-height: 1.42857143 !important;
     letter-spacing: 4px;
     border-radius: 0;
     font-family: Montserrat, sans-serif;
   }
   .navbar li a, .navbar .navbar-brand {
-    color: #fff !important;
+    color: rgb(41, 37, 37) !important;
   }
+  li {
+    margin-right: 3em;
+    margin-left: 3em;
+    }
+
+  
   .navbar-nav li a:hover, .navbar-nav li.active a {
-    color: #ffea1e !important;
+    color: #ffe91ec0 !important;
     background-color: #f4511e !important;
   }
   .navbar-default .navbar-toggle {
@@ -26,3 +34,7 @@
   .navbar-default .navbar-nav>.open>a.dropdown-toggle{
     background-color: #f4511e !important;
   }
+
+body{
+  background-color:rgba(113, 114, 119, 0.644)
+}

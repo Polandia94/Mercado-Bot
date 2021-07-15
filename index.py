@@ -1,3 +1,4 @@
+from herramientas import *
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 from requests_oauthlib import OAuth2Session
@@ -29,13 +30,31 @@ client_id = config["client_id"]
 
 @app.route("/")
 def home():
-    if 'username' in session:
+    if config["prod"] == "False":
+        link = "../inicio?code=1"
+    elif 'username' in session:
         return redirect(url_for('perfil'))
-    return render_template('index.html')
+    else:
+        link = "http://auth.mercadolibre.com.ar/authorization?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri
+    return render_template('index.html', link=link)
 
-@app.route("/login")
-def login():
-    return render_template('login.html')
+@app.route("/funcionamiento")
+def funcionamiento():
+    if config["prod"] == "False":
+        link = "../inicio?code=1"
+    else:
+        link = "http://auth.mercadolibre.com.ar/authorization?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri
+    return render_template('funcionamiento.html', link=link)
+
+@app.route("/precios")
+def precios():
+    if config["prod"] == "False":
+        link = "../inicio?code=1"
+    else:
+        link = "http://auth.mercadolibre.com.ar/authorization?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri
+    return render_template('precios.html',link=link)
+
+
 
 @app.route("/reset")
 def reset():
@@ -166,57 +185,76 @@ def cerrarsesion():
         session.pop('username')
     return redirect(url_for('login'))
 
+@app.route("/error")
+def error():
+    if 'username' in session:
+        session.pop('username')
+    return render_template('error.html')
+
+@app.route("/pagar")
+def pagar():
+    return render_template('pagar.html')
+
 @app.route("/inicio")
 def inicio():
     from models import Usuarios
     codigo = request.url
     codigo = codigo[codigo.find("=")+1:]
-    headers = {'accept': 'application/json','content-type': 'application/x-www-form-urlencoded'}
-    params = {'grant_type' : 'authorization_code', 'client_id' : client_id,'client_secret' : client_secret,'code' : codigo,'redirect_uri' : redirect_uri}
-    uri = "https://api.mercadolibre.com/oauth/token"
-    response = requests.post(uri, params=urllib.parse.urlencode(params), data=params, headers=headers)
-    usuario = response.text[response.text.find('"user_id":')+10:response.text.find(',',response.text.find('"user_id":'))]
-    token = response.text[response.text.find('"access_token":')+16:response.text.find(',',response.text.find('"access_token":'))-1]
-    refreshtoken = response.text[response.text.find('"refresh_token":')+17:response.text.find(',',response.text.find('"refresh_token":'))-1]
-    user = Usuarios.get_by_usuario(usuario).first()
-    if user is None:
-        bearer = "Bearer " + token
-        headers= {'Authorization': bearer}
-        uri = "https://api.mercadolibre.com/users/" + usuario
-        response = requests.get(uri, headers=headers)
-        nickname = response.text[response.text.find('"nickname":')+12:response.text.find(',',response.text.find('"nickname":'))-1]
-        usuarios = Usuarios(nickname=nickname, usuario=usuario,token = token, refreshtoken = refreshtoken, tipo = 1, alta = dt.today(), baja = dt.today()+timedelta(days=15), palabrasminimas = 5,palabrasminimassi = False, tiempodeespera = 0, tiempodeesperasi = False, lunesnorespuesta = False, martesnorespuesta = False, miercolesnorespuesta = False, juevesnorespuesta = False, viernesnorespuesta = False, sabadonorespuesta = False, domingonorespuesta = False,  horainiciobloqueo = 8,  minutoiniciobloqueo = 30,  horafinbloqueo = 10, minutofinbloqueo = 30, bloqueotiemposi = False, bloqueadospreguntas = "", bloqueadoscompras = "", diarespuesta = "", horarespuesta = "", diamensaje = "", horamensaje = "",respuestasauto = 0,mensajesauto =0)
-        print("1")
-        usuarios.save()
-        print("2")
-        user = Usuarios.get_by_usuario(usuario).first()
-        print("3")
-        from models import Encrespuestas
-        encrespuestas = Encrespuestas(user_id=usuario,encabezado = "", incluirencabezado = False, pie = "", incluirpie = False, palabrasmaximas = 5, palabrasmaximassi = False, palabrasprohibidas = "", reputacion = 0, borrarpregunta = False, bloquearusuario = False, palabrasprohibidassi = False, diasprohibidos = "", horainiciobloqueo=0,minutoiniciobloqueo=0, horafinbloqueo=0,minutofinbloqueo=0,bloqueotiemposi=False, unirrespuestas=False, respuestasunidas=0,unirrespuestaglobal=False)
-        encrespuestas.save()
-    else:
-        user.token = token
-        user.refreshtoken = refreshtoken
-        user.save()
-        nickname = user.nickname
-    try:
-        if user.baja < dt.today():
-            return render_template('pagar.html', baja= user.baja)
-        else:
+    if codigo != "1":
+        print(codigo)
+        print("acaaca")
+        headers = {'accept': 'application/json','content-type': 'application/x-www-form-urlencoded'}
+        params = {'grant_type' : 'authorization_code', 'client_id' : client_id,'client_secret' : client_secret,'code' : codigo,'redirect_uri' : redirect_uri}
+        uri = "https://api.mercadolibre.com/oauth/token"
+        response = requests.post(uri, params=urllib.parse.urlencode(params), data=params, headers=headers)
+        try:
+            response = response.json()
+            usuario = response["user_id"]
+            token = response["access_token"]
+            refreshtoken = response.text[response.text.find('"refresh_token":')+17:response.text.find(',',response.text.find('"refresh_token":'))-1]
+            user = Usuarios.get_by_usuario(usuario).first()
+            if user is None:
+                bearer = "Bearer " + token
+                headers= {'Authorization': bearer}
+                uri = "https://api.mercadolibre.com/users/" + usuario
+                response = requests.get(uri, headers=headers)
+                nickname = response.text[response.text.find('"nickname":')+12:response.text.find(',',response.text.find('"nickname":'))-1]
+                usuarios = Usuarios(nickname=nickname, usuario=usuario,token = token, refreshtoken = refreshtoken, tipo = 1, alta = dt.today(), baja = dt.today()+timedelta(days=15), palabrasminimas = 5,palabrasminimassi = False, tiempodeespera = 0, tiempodeesperasi = False, lunesnorespuesta = False, martesnorespuesta = False, miercolesnorespuesta = False, juevesnorespuesta = False, viernesnorespuesta = False, sabadonorespuesta = False, domingonorespuesta = False,  horainiciobloqueo = 8,  minutoiniciobloqueo = 30,  horafinbloqueo = 10, minutofinbloqueo = 30, bloqueotiemposi = False, bloqueadospreguntas = "", bloqueadoscompras = "", diarespuesta = "", horarespuesta = "", diamensaje = "", horamensaje = "",respuestasauto = 0,mensajesauto =0)
+                usuarios.save()
+                user = Usuarios.get_by_usuario(usuario).first()
+                from models import Encrespuestas
+                encrespuestas = Encrespuestas(user_id=usuario,encabezado = "", incluirencabezado = False, pie = "", incluirpie = False, palabrasmaximas = 5, palabrasmaximassi = False, palabrasprohibidas = "", reputacion = 0, borrarpregunta = False, bloquearusuario = False, palabrasprohibidassi = False, diasprohibidos = "", horainiciobloqueo=0,minutoiniciobloqueo=0, horafinbloqueo=0,minutofinbloqueo=0,bloqueotiemposi=False, unirrespuestas=False, respuestasunidas=0,unirrespuestaglobal=False)
+                encrespuestas.save()
+            else:
+                user.token = token
+                user.refreshtoken = refreshtoken
+                user.save()
+                nickname = user.nickname
+        except:
+            if response["message"] == "Error validating grant. Your authorization code or refresh token may be expired or it was already used":
+                return redirect(url_for('error'))
+        try:
+            chequearUsuario(user)
+
             session['username'] = user.id
             nickname = user.nickname
             return redirect(url_for('perfil'))
-    except AttributeError:
-        usuarios = Usuarios(usuario=usuario,token = token, refreshtoken = refreshtoken, tipo = 1, alta = dt.today(), baja = dt.today()+timedelta(days=15), palabrasminimas = 5,palabrasminimassi = False, tiempodeespera = 0, tiempodeesperasi = False, lunesnorespuesta = False, martesnorespuesta = False, miercolesnorespuesta = False, juevesnorespuesta = False, viernesnorespuesta = False, sabadonorespuesta = False, domingonorespuesta = False,  horainiciobloqueo = 8,  minutoiniciobloqueo = 30,  horafinbloqueo = 10, minutofinbloqueo = 30, bloqueotiemposi = False, bloqueadospreguntas = "", bloqueadoscompras = "",mensajes = 0, respuestas = 0)
-        usuarios.save()
-        user = Usuarios.get_by_usuario(usuario).first()        
-        print("4")
-        print(user)
-        if user.baja < dt.today():
-            return render_template('pagar.html', baja= user.baja)
-        else:
-            session['username'] = user.id
-            return render_template('perfil.html', user=user)        
+        except AttributeError:
+            usuarios = Usuarios(usuario=usuario,token = token, refreshtoken = refreshtoken, tipo = 1, alta = dt.today(), baja = dt.today()+timedelta(days=15), palabrasminimas = 5,palabrasminimassi = False, tiempodeespera = 0, tiempodeesperasi = False, lunesnorespuesta = False, martesnorespuesta = False, miercolesnorespuesta = False, juevesnorespuesta = False, viernesnorespuesta = False, sabadonorespuesta = False, domingonorespuesta = False,  horainiciobloqueo = 8,  minutoiniciobloqueo = 30,  horafinbloqueo = 10, minutofinbloqueo = 30, bloqueotiemposi = False, bloqueadospreguntas = "", bloqueadoscompras = "",mensajes = 0, respuestas = 0)
+            usuarios.save()
+            user = Usuarios.get_by_usuario(usuario).first()        
+            print("4")
+            print(user)
+            if user.baja < dt.today():
+                return render_template('pagar.html', baja= user.baja)
+            else:
+                session['username'] = user.id
+                return redirect(url_for('perfil'))
+    else:
+        user = Usuarios.get_by_id(1)
+        chequearUsuario(user)
+        session['username'] = 1    
+        return redirect(url_for('perfil'))   
 
 @app.route("/clientes")
 def clientes():
